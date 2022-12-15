@@ -1,34 +1,32 @@
-package test6.test6;
+package test6.test6.BusienessLayer;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "recipes_db")
 @Data
-public class RecipeDAO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Recipe {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    @NotBlank
     @Column
     String name;
-    @NotBlank
     @Column
     String description;
-    @Size(min = 1)
     @Column
     String[] ingredients;
-    @Size(min = 1)
     @Column
     String[] directions;
 
-    public RecipeDAO(String name, String description, String[] ingredients, String[] directions) {
+    public Recipe(String name, String description, String[] ingredients, String[] directions) {
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
