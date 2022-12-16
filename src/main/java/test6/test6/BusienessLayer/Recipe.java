@@ -4,7 +4,6 @@ package test6.test6.BusienessLayer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -42,15 +41,15 @@ public class Recipe implements Comparable<Recipe> {
     @NotBlank(message = "category shouldn't be null")
     private String category;
 
-    private LocalDateTime localDateTime;
+    private LocalDateTime date;
 
     @PrePersist
-    private void setLocalDateTime() {
-        this.localDateTime = LocalDateTime.now();
+    private void setDate() {
+        this.date = LocalDateTime.now();
     }
 
-    @PreUpdate void updateLocalDateTime() {
-        this.localDateTime = LocalDateTime.now();
+    @PostUpdate void updateLocalDateTime() {
+        this.date = LocalDateTime.now();
     }
 
     public Recipe(String name, String description, List ingredients, List directions, String category) {
@@ -63,6 +62,6 @@ public class Recipe implements Comparable<Recipe> {
 
     @Override
     public int compareTo(Recipe otherRecipe) {
-        return this.localDateTime.compareTo(otherRecipe.localDateTime);
+        return this.date.compareTo(otherRecipe.date);
     }
 }

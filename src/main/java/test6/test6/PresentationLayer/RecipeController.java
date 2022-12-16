@@ -51,9 +51,15 @@ public class RecipeController {
         }
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/api/recipe/{id}")
+    public void updateRecipe(@PathVariable int id, @Valid @RequestBody Recipe newRecipe)  {
+        recipeService.updateRecipeByID(id, newRecipe);
+    }
+
     @DeleteMapping("/api/recipe/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRecipe(@PathVariable int id) {
+    public void deleteRecipe(@PathVariable int id ) {
         recipeService.findRecipeByID(id).ifPresentOrElse(
                 (recipe) -> recipeService.deleteRecipeByID(recipe.getId()),
                 () -> {
