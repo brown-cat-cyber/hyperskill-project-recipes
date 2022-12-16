@@ -10,6 +10,7 @@ import test6.test6.BusienessLayer.RecipeService;
 
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -36,14 +37,14 @@ public class RecipeController {
 
     @GetMapping("/api/recipe/search")
     // returned String for test
-    public String searchRecipe(@RequestParam Map<String, String> allParams) {
+    public List<Recipe> searchRecipe(@RequestParam Map<String, String> allParams) {
         if (allParams.size() != 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else {
             if (allParams.containsKey("category")) {
-                return "YES";
+                return recipeService.findRecipeByCategory(allParams.get("category"));
             } else if (allParams.containsKey("name")) {
-                return "YES";
+                return recipeService.findRecipeByNameContaining(allParams.get("name"));
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
