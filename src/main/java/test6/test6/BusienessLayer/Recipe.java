@@ -1,6 +1,7 @@
 package test6.test6.BusienessLayer;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Recipe implements Comparable<Recipe> {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     int id;
     @NotBlank(message = "Name shouldn't be null")
     private String name;
