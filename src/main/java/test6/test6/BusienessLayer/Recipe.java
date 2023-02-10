@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,7 +21,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recipe implements Comparable<Recipe> {
+public class Recipe {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,8 +66,5 @@ public class Recipe implements Comparable<Recipe> {
         this.category = category;
     }
 
-    @Override
-    public int compareTo(Recipe otherRecipe) {
-        return this.date.compareTo(otherRecipe.date);
-    }
+
 }
