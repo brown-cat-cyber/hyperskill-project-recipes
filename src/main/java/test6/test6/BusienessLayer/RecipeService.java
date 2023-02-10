@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -26,38 +27,44 @@ public class RecipeService {
         return new ModelMapper();
     }
     public static RecipeDto toDTO(Recipe recipe) {
-        return modelMapper.map(recipe, RecipeDto.class);
+        RecipeDto recipeDto = modelMapper.map(recipe, RecipeDto.class);
+        return recipeDto;
     }
 
     public static Recipe toEntity(RecipeDto dto) {
-        return modelMapper.map(dto, Recipe.class);
+        Recipe recipe = modelMapper.map(dto, Recipe.class);
+        recipe.setDate(LocalDateTime.now());
+        return recipe;
     }
 
     public Recipe saveRecipe(@Valid RecipeDto recipeDto) {
         Recipe recipe = toEntity(recipeDto);
-        recipe.setDate();
-        return repository.save();
+        return repository.save(recipe);
     }
 
-    public Optional<Recipe> findRecipeByID (int id) {
-        return repository.findById(id);
+    public RecipeDto findRecipeByID (int id) {
+        Optional<Recipe> recipeOptional = repository.findById(id);
+        Recipe recipe = recipeOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return toDTO(recipe);
     }
 
     public void deleteRecipeByID(int id) {
         repository.deleteById(id);
     }
 
-    public List<Recipe> findRecipeByCategory(String category) {
+    public List<RecipeDto> findRecipeByCategory(String category) {
         List<Recipe> recipes = repository.findByCategoryIgnoreCaseOrderByDateDesc(category);
-         return recipes;
+        List<RecipeDto> recipeDtos = recipes.stream().map((recipe -> toDTO(recipe))).collect(Collectors.toList());
+        return recipeDtos;
     }
 
-    public List<Recipe> findRecipeByNameContaining(String name) {
+    public List<RecipeDto> findRecipeByNameContaining(String name) {
         List<Recipe> recipes = repository.findByNameContainingIgnoreCaseOrderByDateDesc(name);
-        return recipes;
+        List<RecipeDto> recipeDtos =  recipes.stream().map((recipe -> toDTO(recipe))).collect(Collectors.toList());
+        return recipeDtos;
     }
 
-    public void updateRecipeByID(int id, Recipe newRecipe) {
+    public void updateRecipeByID(int id, RecipeDto newRecipe) {
         Recipe recipe = repository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND));
         recipe = toEntity(newRecipe);

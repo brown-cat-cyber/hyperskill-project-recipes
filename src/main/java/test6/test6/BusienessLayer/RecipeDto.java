@@ -1,6 +1,8 @@
 package test6.test6.BusienessLayer;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,18 +15,20 @@ import java.util.List;
  * A DTO for the {@link Recipe} entity
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RecipeDto implements Serializable {
     @NotBlank(message = "Name shouldn't be null")
-    private final String name;
+    private String name;
     @NotBlank(message = "Description shouldn't be null")
-    private final String description;
+    private String description;
     @NotNull(message = "Ingredients shouldn't be null")
     @Size(min = 1, message = "size must greater than or equal 1")
-    private final List<String> ingredients;
+    private List<String> ingredients;
     @NotNull(message = "Directions shouldn't be null")
     @Size(min = 1, message = "size must greater than or equal 1")
-    private final List<String> directions;
+    private List<String> directions;
     @NotBlank(message = "category shouldn't be null")
-    private final String category;
-    private final LocalDateTime date;
+    private String category;
+    private LocalDateTime date;
 }

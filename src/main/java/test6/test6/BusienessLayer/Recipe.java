@@ -6,13 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,7 +20,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recipe {
+public class Recipe implements Serializable {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,14 +55,6 @@ public class Recipe {
 
     @PostUpdate void updateLocalDateTime() {
         this.date = LocalDateTime.now();
-    }
-
-    public Recipe(String name, String description, List ingredients, List directions, String category) {
-        this.name = name;
-        this.description = description;
-        this.ingredients = ingredients;
-        this.directions = directions;
-        this.category = category;
     }
 
 
