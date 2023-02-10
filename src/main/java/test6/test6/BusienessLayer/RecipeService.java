@@ -32,13 +32,13 @@ public class RecipeService {
     }
 
     public List<Recipe> findRecipeByCategory(String category) {
-        List<Recipe> recipes = repository.findByCategoryIgnoreCase(category);
+        List<Recipe> recipes = repository.findByCategoryIgnoreCaseOrderByDateDesc(category);
         Collections.sort(recipes, Collections.reverseOrder());
         return recipes;
     }
 
     public List<Recipe> findRecipeByNameContaining(String name) {
-        List<Recipe> recipes = repository.findByNameContainingIgnoreCase(name);
+        List<Recipe> recipes = repository.findByNameContainingIgnoreCaseOrderByDateDesc(name);
         Collections.sort(recipes, Collections.reverseOrder());
         return recipes;
     }

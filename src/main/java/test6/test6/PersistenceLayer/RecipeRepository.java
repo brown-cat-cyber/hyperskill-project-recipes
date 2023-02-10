@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
 
-    List<Recipe> findByCategoryIgnoreCase(String category);
+    List<Recipe> findByCategoryIgnoreCaseOrderByDateDesc(String category);
 
-    List<Recipe> findByNameContainingIgnoreCase(String name);
+    List<Recipe> findByNameContainingIgnoreCaseOrderByDateDesc(String name);
 
 }
