@@ -1,14 +1,14 @@
 package test6.test6.PresentationLayer;
 
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import test6.test6.BusienessLayer.RecipeDto;
-import test6.test6.BusienessLayer.RecipeService;
-import test6.test6.BusienessLayer.UserDto;
-import test6.test6.BusienessLayer.UserService;
+import test6.test6.BusienessLayer.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -29,8 +29,9 @@ public class RecipeController {
 
 
     @PostMapping("/api/recipe/new")
-    public JSONResponse postRecipe(@Valid @RequestBody RecipeDto recipeDto) {
-        return new JSONResponse(recipeService.saveRecipe(recipeDto).getId());
+    public JSONResponse postRecipe(@Valid @RequestBody RecipeDto recipeDto,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return new JSONResponse(recipeService.saveRecipe(recipeDto, userDetails).getId());
     }
 
     @GetMapping("/api/recipe/{id}")
@@ -56,15 +57,15 @@ public class RecipeController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/api/recipe/{id}")
-    public void updateRecipe(@PathVariable int id, @Valid @RequestBody RecipeDto newRecipe)  {
-        recipeService.updateRecipeByID(id, newRecipe);
+    public void updateRecipe(@PathVariable int id, @Valid @RequestBody RecipeDto newRecipe,
+                             @AuthenticationPrincipal UserDetailsImpl userDetails)  {
+        recipeService.updateRecipeByID(id, newRecipe, userDetails);
     }
 
     @DeleteMapping("/api/recipe/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRecipe(@PathVariable int id ) {
-        recipeService.findRecipeByID(id);
-        recipeService.deleteRecipeByID(id);
+    public void deleteRecipe(@PathVariable int id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        recipeService.deleteRecipeByID(id, userDetails);
     }
 
 

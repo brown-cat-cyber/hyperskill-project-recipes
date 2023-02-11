@@ -5,6 +5,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +28,8 @@ import java.util.stream.Collectors;
 public class RecipeService {
     @Autowired private final RecipeRepository repository;
     @Autowired  private final ModelMapper modelMapper;
-    @Autowired private final PasswordEncoder passwordEncoder;
+    @Autowired Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    @Autowired private final UserService userService;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -46,8 +51,9 @@ public class RecipeService {
 
 
 
-    public Recipe saveRecipe(@Valid RecipeDto recipeDto) {
+    public Recipe saveRecipe(@Valid RecipeDto recipeDto, UserDetails userDetails) {
         Recipe recipe = toRecipeEntity(recipeDto);
+        recipe.setUser(userService.findUser(userDetails.getUsername()));
         return repository.save(recipe);
     }
 
@@ -57,9 +63,6 @@ public class RecipeService {
         return toRecipeDTO(recipe);
     }
 
-    public void deleteRecipeByID(int id) {
-        repository.deleteById(id);
-    }
 
     public List<RecipeDto> findRecipeByCategory(String category) {
         List<Recipe> recipes = repository.findByCategoryIgnoreCaseOrderByDateDesc(category);
@@ -73,10 +76,25 @@ public class RecipeService {
         return recipeDtos;
     }
 
-    public void updateRecipeByID(int id, RecipeDto newRecipe) {
+    public void updateRecipeByID(int id, RecipeDto newRecipeDto, UserDetails userDetails) {
         Recipe recipe = repository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND));
-        recipe = toRecipeEntity(newRecipe);
+        User user = recipe.getUser();
+        if (user.getEmail() != userDetails.getUsername()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        recipe = toRecipeEntity(newRecipeDto);
+        recipe.setUser(user);
         repository.save(recipe);
     }
+
+    public void deleteRecipeByID(int id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Recipe recipe = repository.findById(id).orElseThrow();
+        User user = recipe.getUser();
+        if (user.getEmail() != userDetails.getUsername()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        repository.deleteById(id);
+    }
+
 }

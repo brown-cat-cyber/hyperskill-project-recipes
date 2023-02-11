@@ -22,5 +22,6 @@ public class User {
     private List<Recipe> recipes = new ArrayList<>();
 
     public User(String email, String encode, String authenticated) {
+
     }
 }
