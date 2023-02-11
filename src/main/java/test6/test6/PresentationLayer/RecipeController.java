@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import test6.test6.BusienessLayer.RecipeDto;
 import test6.test6.BusienessLayer.RecipeService;
 import test6.test6.BusienessLayer.UserDto;
+import test6.test6.BusienessLayer.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,10 +19,12 @@ public class RecipeController {
 
     @Autowired
     RecipeService recipeService;
+    @Autowired
+    UserService userService;
 
     @PostMapping("/api/register")
     public void signIn (@Valid @RequestBody UserDto userDto) {
-        recipeService.saveUser(userDto);
+        userService.saveUser(userDto);
     }
 
 

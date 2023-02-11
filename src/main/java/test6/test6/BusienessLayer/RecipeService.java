@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 @Data
 public class RecipeService {
     @Autowired private final RecipeRepository repository;
-    @Autowired private final UserRepository userRepository;
-    @Autowired  private final ModelMapper modelMapper = new ModelMapper();
+    @Autowired  private final ModelMapper modelMapper;
     @Autowired private final PasswordEncoder passwordEncoder;
 
     @Bean
@@ -32,10 +31,7 @@ public class RecipeService {
         return new ModelMapper();
     }
 
-    @Bean
-    public PasswordEncoder getEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     public RecipeDto toRecipeDTO(Recipe recipe) {
         RecipeDto recipeDto = modelMapper.map(recipe, RecipeDto.class);
@@ -48,20 +44,7 @@ public class RecipeService {
         return recipe;
     }
 
-    public void User toUserEntity(UserDto userDto) {
 
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
-    }
-
-
-    public void saveUser(UserDto userDto) {
-        if (userRepository.findUserByEmail(userDto.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } else {
-            userRepository.save(toUserEntity(userDto));
-        }
-    }
 
     public Recipe saveRecipe(@Valid RecipeDto recipeDto) {
         Recipe recipe = toRecipeEntity(recipeDto);

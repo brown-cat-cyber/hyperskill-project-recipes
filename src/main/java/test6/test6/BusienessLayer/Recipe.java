@@ -26,27 +26,16 @@ public class Recipe implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     int id;
-    @NotBlank(message = "Name shouldn't be null")
     private String name;
-
-    @NotBlank(message = "Description shouldn't be null")
     private String description;
-
-    @NotNull(message = "Ingredients shouldn't be null")
-    @Size(min = 1, message = "size must greater than or equal 1")
-    @ElementCollection
     private List<String> ingredients;
-
-    @NotNull(message = "Directions shouldn't be null")
-    @Size(min = 1, message = "size must greater than or equal 1")
-    @ElementCollection
     private List<String> directions;
-
-    @NotBlank(message = "category shouldn't be null")
     private String category;
-
     @UpdateTimestamp
     private LocalDateTime date;
+    @ManyToOne
+    @JoinColumn(name = "user_email")
+    private User user;
 
     @PrePersist
     private void setDate() {
