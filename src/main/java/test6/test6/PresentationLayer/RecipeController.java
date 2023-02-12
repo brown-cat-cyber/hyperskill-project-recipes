@@ -1,11 +1,9 @@
 package test6.test6.PresentationLayer;
 
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import test6.test6.BusienessLayer.*;
@@ -31,7 +29,8 @@ public class RecipeController {
     @PostMapping("/api/recipe/new")
     public JSONResponse postRecipe(@Valid @RequestBody RecipeDto recipeDto,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return new JSONResponse(recipeService.saveRecipe(recipeDto, userDetails).getId());
+        User user = userService.findUser(userDetails.getUsername());
+        return new JSONResponse(recipeService.saveRecipe(recipeDto, user).getId());
     }
 
     @GetMapping("/api/recipe/{id}")

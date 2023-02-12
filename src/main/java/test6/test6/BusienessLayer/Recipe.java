@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recipe implements Serializable {
+public class Recipe  {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,9 @@ public class Recipe implements Serializable {
     int id;
     private String name;
     private String description;
+    @ElementCollection
     private List<String> ingredients;
+    @ElementCollection
     private List<String> directions;
     private String category;
     @UpdateTimestamp

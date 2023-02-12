@@ -1,6 +1,6 @@
 package test6.test6.BusienessLayer;
 
-import lombok.Data;
+import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,17 +24,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Data
+@Setter
+@Getter
 public class RecipeService {
-    @Autowired private final RecipeRepository repository;
-    @Autowired  private final ModelMapper modelMapper;
-    @Autowired Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    @Autowired private final UserService userService;
+    @Autowired private RecipeRepository repository;
+    @Autowired  private ModelMapper modelMapper;
 
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+
 
 
 
@@ -51,9 +47,9 @@ public class RecipeService {
 
 
 
-    public Recipe saveRecipe(@Valid RecipeDto recipeDto, UserDetails userDetails) {
+    public Recipe saveRecipe(@Valid RecipeDto recipeDto, User user) {
         Recipe recipe = toRecipeEntity(recipeDto);
-        recipe.setUser(userService.findUser(userDetails.getUsername()));
+        recipe.setUser(user);
         return repository.save(recipe);
     }
 
@@ -89,7 +85,8 @@ public class RecipeService {
     }
 
     public void deleteRecipeByID(int id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Recipe recipe = repository.findById(id).orElseThrow();
+        Recipe recipe = repository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
         User user = recipe.getUser();
         if (user.getEmail() != userDetails.getUsername()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);

@@ -21,10 +21,7 @@ public class UserService implements UserDetailsService {
     @Autowired private final UserRepository userRepository;
 
 
-    @Bean
-    public PasswordEncoder getEncoder() {
-        return new BCryptPasswordEncoder(3);
-    }
+
 
     public User toUserEntity(UserDto userDto) {
         User user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), "authenticated");
