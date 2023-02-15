@@ -1,21 +1,15 @@
 package test6.test6.BusienessLayer;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import test6.test6.PersistenceLayer.RecipeRepository;
-import test6.test6.PersistenceLayer.UserRepository;
-
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -43,6 +37,16 @@ public class RecipeService {
         Recipe recipe = modelMapper.map(dto, Recipe.class);
         recipe.setDate(LocalDateTime.now());
         return recipe;
+    }
+
+    public void toRecipeEntity(Recipe recipe, RecipeDto dto) {
+        recipe.setCategory(dto.getCategory());
+        recipe.setDescription(dto.getDescription());
+        recipe.setName(dto.getName());
+        recipe.setDirections(dto.getDirections());
+        recipe.setCategory(dto.getCategory());
+        recipe.setIngredients(dto.getIngredients());
+        recipe.setDate(LocalDateTime.now());
     }
 
 
@@ -73,13 +77,13 @@ public class RecipeService {
     }
 
     public void updateRecipeByID(int id, RecipeDto newRecipeDto, UserDetails userDetails) {
-        Recipe recipe = repository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Optional<Recipe> recipeOptional = repository.findById(id);
+        Recipe recipe = recipeOptional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         User user = recipe.getUser();
         if (user.getEmail() != userDetails.getUsername()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        recipe = toRecipeEntity(newRecipeDto);
+        toRecipeEntity(recipe,newRecipeDto);
         recipe.setUser(user);
         repository.save(recipe);
     }
